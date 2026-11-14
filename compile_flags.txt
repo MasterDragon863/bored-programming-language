@@ -1,0 +1,12 @@
+-Wall
+-Wextra
+-Werror
+-pedantic
+-I./raylib/src/
+-std=c99
+-lm
+-L./raylib/src
+-lraylib
+-lX11
+
+
