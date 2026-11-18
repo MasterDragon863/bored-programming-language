@@ -1,9 +1,9 @@
 CC = cc
 
 ifeq ($(NDEBUG), 1)
-CFLAGS = -Wall -Wextra -Werror -std=c89 -pedantic -O3 -Wpedantic
+CFLAGS = -Wall -Wextra -Werror -std=c89 -pedantic -O3 -Wpedantic -DNDEBUG
 else
-CFLAGS = -Wall -Wextra -Werror -std=c89 -pedantic -ggdb -Wpedantic
+CFLAGS = -Wall -Wextra -Werror -std=c89 -pedantic -ggdb3 -Wpedantic
 endif
 
 LINKER_FLAGS = 

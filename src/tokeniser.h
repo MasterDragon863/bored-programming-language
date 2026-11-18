@@ -3,6 +3,7 @@
 #define TOKENISER_H_
 
 #include <stddef.h>
+#include "arena.h"
 #include "darray.h"
 
 enum token_enum {
@@ -21,7 +22,7 @@ struct token {
 
 struct prgm_tkns {
 	struct darray token_arr;
-	size_t total_tokens;
+	struct arena* arena;
 };
 
 int tokenise_program(struct prgm_tkns *out, const char *prgm_str);

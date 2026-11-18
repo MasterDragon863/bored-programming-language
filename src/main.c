@@ -3,8 +3,11 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "tokeniser.h"
+
+#include "arena.h"
+#include "ast.h"
 #include "darray.h"
+#include "tokeniser.h"
 
 void print_help(void);
 int read_file(const char *fpath, char **out);
@@ -14,7 +17,16 @@ int main(int argc, char **argv)
 	char *src_file;
 	struct prgm_tkns tkns;
 	struct token tkn;
+	struct arena ast_arena	= {NULL, NULL};
+	struct arena tkns_arena = {NULL, NULL};
+	struct ast ast;
+#ifndef NDEBUG
+	struct ast_node node;
+#endif
 	size_t _i;
+
+	tkns.arena = &tkns_arena;
+	ast.arena  = &ast_arena;
 
 	if (argc < 2) {
 		printf(
@@ -35,13 +47,29 @@ int main(int argc, char **argv)
 	tokenise_program(&tkns, src_file);
 	free(src_file);
 
-	for (_i = 0; _i < tkns.total_tokens; _i++)
-	{
-
+	for (_i = 0; _i < tkns.token_arr.element_count; _i++) {
 		darray_retrieve_element(_i, &tkns.token_arr, &tkn);
 		printf("Token: %d (%s)\n", tkn.type, tkn.val);
 	}
 
+	ast_create_ast(&ast, &tkns);
+
+#ifndef NDEBUG
+	printf("\nProgram\n");
+	for (_i = 0; _i < ast.ast_nodes.element_count; _i++) {
+		darray_retrieve_element(_i, &ast.ast_nodes, &node);
+		if (node.print != NULL) {
+			node.print(&node, 0);
+		}
+	}
+
+#endif
+
+	darray_destroy(&tkns.token_arr);
+	darray_destroy(&ast.ast_nodes);
+
+	arena_free(&tkns_arena);
+	arena_free(&ast_arena);
 
 	return EXIT_SUCCESS;
 }
